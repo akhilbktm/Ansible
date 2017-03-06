@@ -1,0 +1,24 @@
+---
+- name: awscli config
+  expect:
+     command: aws configure
+     responses:
+         AWS Access Key ID: "{{AWS_ACCESS_KEY_ID}}"
+         AWS Secret Access Key: "{{AWS_SECRET_ACCESS_KEY}}"
+         Default region name: "{{AWS_DEFAUlT_REGION}}"
+         Default output format: "json"
+
+- name: get file contents
+  command: cat /root/output.text
+  register: my_items 
+
+- name: Network  status check
+  shell: aws ec2 describe-instance-attribute --instance-id "{{ item }}" --attribute sriovNetSupport --output text
+  with_items: "{{ my_items.stdout_lines }}"
+  register: r
+- debug: msg="{{ item.stdout_lines }}"
+  with_items: "{{ r.results }}"
+ 
+
+#- name: check driver
+ # shell: ethtool -i $(lshw -class network | grep 'logical name'| awk '{print $3;}')

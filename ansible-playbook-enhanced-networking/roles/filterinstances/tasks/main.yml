@@ -1,0 +1,24 @@
+---
+- name: awscli config
+  expect:
+     command: aws configure
+     responses:
+         AWS Access Key ID: "{{AWS_ACCESS_KEY_ID}}"
+         AWS Secret Access Key: "{{AWS_SECRET_ACCESS_KEY}}"
+         Default region name: "{{AWS_DEFAUlT_REGION}}"
+         Default output format: "json"
+
+- name: aws filter
+  shell: aws ec2 describe-instances --filters "Name=instance-type,Values={{item}}" --query "Reservations[*].Instances[*].[InstanceId, State.Name]" --output text | grep 'running'| awk '{print$1}' >/root/output.text 2>&1
+  with_items:
+#     - c3.*
+#     - m4.*
+     - c4.*
+#     - d2.*
+#     - i2.*
+#     - r3.*
+#     - i3.*
+#     - p2.*
+#     - r4.*
+#     - x1.*
+
